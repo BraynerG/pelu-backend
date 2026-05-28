@@ -12,21 +12,21 @@ async function main() {
   // 1. Insertar slides del Lookbook dinámicos
   const slides = [
     {
-      url: '/images/hero_salon.png',
+      url: '/images/hero_salon.webp',
       title: 'KAREN MENDEZ',
       subtitle: 'Diseño capilar orgánico y rituales de alta costura para realzar tu esencia.',
       tag: 'HAIR DESIGNER',
       accent: 'RITUALES DE AUTOR',
     },
     {
-      url: '/images/service_balayage.png',
+      url: '/images/service_balayage.webp',
       title: 'ILUMINACIÓN SUPREMA',
       subtitle: 'Técnicas artísticas de Balayage tridimensional y destellos de sol que dan vida a tu cabello.',
       tag: 'TENDENCIAS 2026',
       accent: 'ALTA PELUQUERÍA',
     },
     {
-      url: '/images/service_makeup.png',
+      url: '/images/service_makeup.webp',
       title: 'EDITORIAL GLOW',
       subtitle: 'Maquillaje profesional y preparación de piel satinada para eventos inolvidables.',
       tag: 'MAQUILLAJE & MIRADA',
@@ -48,7 +48,7 @@ async function main() {
       description: 'Un corte personalizado diseñado por Karen Mendez para adaptarse a tus facciones. Incluye lavado capilar orgánico, masaje craneal hidratante y peinado de pasarela.',
       price: 45,
       duration: 45,
-      imageUrl: '/images/service_haircut.png',
+      imageUrl: '/images/service_haircut.webp',
       category: 'hair',
       steps: [
         'Diagnóstico personalizado de visagismo y morfología facial',
@@ -62,7 +62,7 @@ async function main() {
       description: 'Técnica artística a mano alzada para crear un degradado natural de luz y color tridimensional. Incluye matización premium y tratamiento protector Olaplex.',
       price: 120,
       duration: 180,
-      imageUrl: '/images/service_balayage.png',
+      imageUrl: '/images/service_balayage.webp',
       category: 'hair',
       steps: [
         'Análisis cromático del cabello y prueba de elasticidad de la fibra',
@@ -76,7 +76,7 @@ async function main() {
       description: 'Tratamiento antioxidante intensivo que devuelve la luminosidad inmediata a tu piel. Incluye doble limpieza, exfoliación enzimática, mascarilla de vitamina C pura y masaje facial tensor.',
       price: 85,
       duration: 60,
-      imageUrl: '/images/service_facial.png',
+      imageUrl: '/images/service_facial.webp',
       category: 'spa',
       steps: [
         'Doble limpieza facial japonesa con bálsamos y espumas botánicas',
@@ -90,7 +90,7 @@ async function main() {
       description: 'Maquillaje profesional personalizado de larga duración. Perfecto para eventos o sesiones de fotos, utilizando productos icónicos de firmas de alta gama con efecto piel satinada.',
       price: 75,
       duration: 60,
-      imageUrl: '/images/service_makeup.png',
+      imageUrl: '/images/service_makeup.webp',
       category: 'makeup',
       steps: [
         'Preparación intensiva de piel con brumas hidratantes y sérum de ácido hialurónico',
@@ -104,7 +104,7 @@ async function main() {
       description: 'Tratamiento combinado para realzar tu mirada. Eleva e hidrata tus pestañas naturales de forma duradera, acompañado de un perfilado de cejas experto y tinte suave de henna.',
       price: 50,
       duration: 60,
-      imageUrl: '/images/service_makeup.png',
+      imageUrl: '/images/service_makeup.webp',
       category: 'makeup',
       steps: [
         'Estudio de la mirada y arquitectura de cejas según proporción áurea',
