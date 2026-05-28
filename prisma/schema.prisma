@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  engineType      = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// Modelos del Proyecto Portfolio (Req: Project: Brayner Professional Portfolio CMS)
+// -----------------------------------------------------------------------------
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  tags        String[]
+  githubUrl   String?
+  demoUrl     String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+// -----------------------------------------------------------------------------
+// Modelos de la Peluquería
+// -----------------------------------------------------------------------------
+model Service {
+  id          String        @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  duration    Int           // duración en minutos
+  imageUrl    String?
+  category    String        @default("hair")
+  steps       String[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  reservations Reservation[]
+}
+
+model LookbookSlide {
+  id        String   @id @default(uuid())
+  url       String
+  title     String
+  subtitle  String
+  tag       String
+  accent    String?
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  name         String
+  phone        String?
+  role         Role          @default(CUSTOMER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  reservations Reservation[]
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  MODIFIED
+  REJECTED
+  CANCELLED
+}
+
+model Reservation {
+  id            String            @id @default(uuid())
+  customerName  String
+  customerPhone String
+  date          DateTime
+  status        ReservationStatus @default(PENDING)
+  notes         String?
+  serviceId     String
+  service       Service           @relation(fields: [serviceId], references: [id])
+  userId        String?
+  user          User?             @relation(fields: [userId], references: [id])
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
