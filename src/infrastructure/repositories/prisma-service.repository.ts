@@ -34,4 +34,24 @@ export class PrismaServiceRepository implements IServiceRepository {
     });
     return new ServiceEntity(model);
   }
+
+  async update(id: string, data: Partial<ServiceEntity>): Promise<ServiceEntity> {
+    const model = await this.prisma.service.update({
+      where: { id },
+      data: {
+        name: data.name,
+        description: data.description === null ? '' : data.description,
+        price: data.price,
+        duration: data.duration,
+        imageUrl: data.imageUrl,
+        category: data.category,
+        steps: data.steps,
+      }
+    });
+    return new ServiceEntity(model);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.service.delete({ where: { id } });
+  }
 }
