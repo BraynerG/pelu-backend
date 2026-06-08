@@ -29,16 +29,29 @@ model Project {
 // Modelos de la Peluquería
 // -----------------------------------------------------------------------------
 model Service {
-  id          String        @id @default(uuid())
-  name        String
-  description String
-  price       Float
-  duration    Int           // duración en minutos
-  imageUrl    String?
-  category    String        @default("hair")
-  steps       String[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           String           @id @default(uuid())
+  name         String
+  description  String
+  price        Float
+  duration     Int              // duración en minutos
+  imageUrl     String?
+  category     String           @default("hair")
+  steps        String[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  reservations Reservation[]
+  variants     ServiceVariant[]
+}
+
+model ServiceVariant {
+  id           String        @id @default(uuid())
+  name         String        // Ej. "Cabello Corto", "Cabello Medio", "Cabello Largo"
+  price        Float
+  duration     Int           // duración en minutos
+  serviceId    String
+  service      Service       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   reservations Reservation[]
 }
 
@@ -86,6 +99,8 @@ model Reservation {
   notes         String?
   serviceId     String
   service       Service           @relation(fields: [serviceId], references: [id])
+  variantId     String?
+  variant       ServiceVariant?   @relation(fields: [variantId], references: [id])
   userId        String?
   user          User?             @relation(fields: [userId], references: [id])
   createdAt     DateTime          @default(now())

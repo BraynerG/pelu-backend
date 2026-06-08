@@ -20,7 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
         }
         return secret || 'secretKey';
       })(),
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '24h' },
     }),
   ],
   controllers: [AuthController],

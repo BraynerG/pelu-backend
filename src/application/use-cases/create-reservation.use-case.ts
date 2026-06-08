@@ -22,13 +22,21 @@ export class CreateReservationUseCase {
       throw new BadRequestException('El servicio especificado no existe');
     }
 
-    // 2. Validar que la fecha sea en el futuro
+    // 2. Si se especifica una variante, verificar que pertenezca al servicio
+    if (dto.variantId) {
+      const variant = service.variants?.find(v => v.id === dto.variantId);
+      if (!variant) {
+        throw new BadRequestException('La variante especificada no pertenece a este servicio');
+      }
+    }
+
+    // 3. Validar que la fecha sea en el futuro
     const reservationDate = new Date(dto.date);
     if (reservationDate <= new Date()) {
       throw new BadRequestException('La fecha de la reserva debe ser en el futuro');
     }
 
-    // 3. Crear la reserva
+    // 4. Crear la reserva
     const reservation = await this.reservationRepository.create({
       customerName: dto.customerName,
       customerPhone: dto.customerPhone,
@@ -36,6 +44,7 @@ export class CreateReservationUseCase {
       status: ReservationStatus.PENDING,
       notes: dto.notes,
       serviceId: dto.serviceId,
+      variantId: dto.variantId ?? null,
       userId: userId,
     });
 

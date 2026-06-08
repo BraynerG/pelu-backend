@@ -13,9 +13,10 @@ export class PrismaReservationRepository implements IReservationRepository {
         customerName: data.customerName!,
         customerPhone: data.customerPhone!,
         date: data.date!,
-        status: data.status as any ?? 'PENDING', // Cast to any to match Prisma enum if needed
+        status: data.status as any ?? 'PENDING',
         notes: data.notes ?? null,
         serviceId: data.serviceId!,
+        variantId: data.variantId ?? null,
         userId: data.userId,
       }
     });

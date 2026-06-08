@@ -9,13 +9,17 @@ export class PrismaServiceRepository implements IServiceRepository {
 
   async findAll(): Promise<ServiceEntity[]> {
     const models = await this.prisma.service.findMany({
+      include: { variants: { orderBy: { price: 'asc' } } },
       orderBy: { createdAt: 'desc' }
     });
     return models.map(model => new ServiceEntity(model));
   }
 
   async findById(id: string): Promise<ServiceEntity | null> {
-    const model = await this.prisma.service.findUnique({ where: { id } });
+    const model = await this.prisma.service.findUnique({
+      where: { id },
+      include: { variants: true }
+    });
     if (!model) return null;
     return new ServiceEntity(model);
   }
@@ -30,12 +34,26 @@ export class PrismaServiceRepository implements IServiceRepository {
         imageUrl: data.imageUrl ?? null,
         category: data.category ?? 'hair',
         steps: data.steps ?? [],
-      }
+        variants: data.variants ? {
+          create: data.variants
+            .filter(v => v.name && v.price !== undefined && v.duration !== undefined)
+            .map(v => ({
+              name: v.name!,
+              price: v.price!,
+              duration: v.duration!,
+            }))
+        } : undefined
+      },
+      include: { variants: true }
     });
     return new ServiceEntity(model);
   }
 
   async update(id: string, data: Partial<ServiceEntity>): Promise<ServiceEntity> {
+    if (data.variants) {
+      await this.prisma.serviceVariant.deleteMany({ where: { serviceId: id } });
+    }
+
     const model = await this.prisma.service.update({
       where: { id },
       data: {
@@ -46,7 +64,17 @@ export class PrismaServiceRepository implements IServiceRepository {
         imageUrl: data.imageUrl,
         category: data.category,
         steps: data.steps,
-      }
+        variants: data.variants ? {
+          create: data.variants
+            .filter(v => v.name && v.price !== undefined && v.duration !== undefined)
+            .map(v => ({
+              name: v.name!,
+              price: v.price!,
+              duration: v.duration!,
+            }))
+        } : undefined
+      },
+      include: { variants: true }
     });
     return new ServiceEntity(model);
   }

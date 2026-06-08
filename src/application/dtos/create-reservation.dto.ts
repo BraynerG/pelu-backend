@@ -17,6 +17,10 @@ export class CreateReservationDto {
   @IsNotEmpty({ message: 'El ID del servicio es requerido' })
   serviceId: string;
 
+  @IsUUID('4', { message: 'El ID de la variante debe ser un UUID válido' })
+  @IsOptional()
+  variantId?: string;
+
   @IsString()
   @IsOptional()
   notes?: string;
