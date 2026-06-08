@@ -6,6 +6,7 @@ export interface IReservationRepository {
   create(reservation: Partial<ReservationEntity>): Promise<ReservationEntity>;
   findByServiceAndDate(serviceId: string, date: Date): Promise<ReservationEntity[]>;
   findAll(): Promise<ReservationEntity[]>;
+  findActive(): Promise<ReservationEntity[]>;
   findById(id: string): Promise<ReservationEntity | null>;
   update(id: string, data: Partial<ReservationEntity>): Promise<ReservationEntity>;
 }

@@ -40,6 +40,22 @@ export class PrismaReservationRepository implements IReservationRepository {
     return models.map(model => new ReservationEntity(model as any));
   }
 
+  async findActive(): Promise<ReservationEntity[]> {
+    const models = await this.prisma.reservation.findMany({
+      where: {
+        status: {
+          notIn: ['CANCELLED', 'REJECTED']
+        }
+      },
+      include: {
+        service: true,
+        variant: true
+      },
+      orderBy: { date: 'asc' }
+    });
+    return models.map(model => new ReservationEntity(model as any));
+  }
+
   async findById(id: string): Promise<ReservationEntity | null> {
     const model = await this.prisma.reservation.findUnique({
       where: { id }

@@ -3,6 +3,7 @@ import { CreateReservationUseCase } from '../../application/use-cases/create-res
 import { GetReservationsUseCase } from '../../application/use-cases/get-reservations.use-case';
 import { UpdateReservationStatusUseCase } from '../../application/use-cases/update-reservation-status.use-case';
 import { RescheduleReservationUseCase } from '../../application/use-cases/reschedule-reservation.use-case';
+import { GetOccupiedSlotsUseCase } from '../../application/use-cases/get-occupied-slots.use-case';
 import { CreateReservationDto } from '../../application/dtos/create-reservation.dto';
 import { ReservationStatus } from '../../domain/entities/reservation.entity';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
@@ -17,6 +18,7 @@ export class ReservationsController {
     private readonly getReservationsUseCase: GetReservationsUseCase,
     private readonly updateReservationStatusUseCase: UpdateReservationStatusUseCase,
     private readonly rescheduleReservationUseCase: RescheduleReservationUseCase,
+    private readonly getOccupiedSlotsUseCase: GetOccupiedSlotsUseCase,
   ) {}
 
   @Post()
@@ -27,6 +29,15 @@ export class ReservationsController {
     return {
       success: true,
       data: reservation,
+    };
+  }
+
+  @Get('occupied')
+  async getOccupied() {
+    const occupied = await this.getOccupiedSlotsUseCase.execute();
+    return {
+      success: true,
+      data: occupied,
     };
   }
 
