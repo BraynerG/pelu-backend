@@ -66,10 +66,11 @@ export class ExternalWhatsAppService implements IWhatsAppService {
       if (response && response.ok) {
         const data = await response.json().catch(() => ({}));
         return {
-          authenticated: data.authenticated ?? true,
+          authenticated: data.authenticated ?? false,
           status: data.status ?? 'READY',
           provider: 'external-api',
           phoneNumber: data.phoneNumber || 'Gateway Remoto',
+          qrCode: data.qrCode,
         };
       }
 
