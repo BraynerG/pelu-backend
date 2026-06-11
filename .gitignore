@@ -6,4 +6,6 @@ node_modules
 dist/
 dist
 /dist
+.wwebjs_auth/
+.wwebjs_cache/
 
