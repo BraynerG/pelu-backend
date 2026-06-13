@@ -18,4 +18,19 @@ export interface IGoogleCalendarService {
    * Devuelve true si se eliminó con éxito, false en caso contrario.
    */
   deleteEvent(eventId: string): Promise<boolean>;
+
+  /**
+   * Obtiene el estado de la conexión de Google Calendar.
+   */
+  getStatus(): Promise<{ connected: boolean; email?: string; provider?: string }>;
+
+  /**
+   * Elimina las credenciales de Google Calendar de la base de datos.
+   */
+  clearConfig(): Promise<boolean>;
+
+  /**
+   * Guarda los tokens de Google Calendar (accessToken, refreshToken, expiryDate) en la base de datos.
+   */
+  saveTokens(tokens: any): Promise<void>;
 }

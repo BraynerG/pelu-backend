@@ -23,4 +23,21 @@ export class MockGoogleCalendarService implements IGoogleCalendarService {
     console.log(`[MockGoogleCalendarService] Eliminando evento con ID: ${eventId}`);
     return true;
   }
+
+  async getStatus(): Promise<{ connected: boolean; email?: string; provider?: string }> {
+    return {
+      connected: true,
+      email: 'mock-admin@elegance.com',
+      provider: 'Simulado (Mock)',
+    };
+  }
+
+  async clearConfig(): Promise<boolean> {
+    console.log('[MockGoogleCalendarService] Limpiando configuración simulada.');
+    return true;
+  }
+
+  async saveTokens(tokens: any): Promise<void> {
+    console.log('[MockGoogleCalendarService] Guardando tokens simulados:', tokens);
+  }
 }
