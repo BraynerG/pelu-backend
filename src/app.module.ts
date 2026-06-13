@@ -6,6 +6,7 @@ import { ReservationsModule } from './reservations/reservations.module';
 import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { WhatsAppModule } from './infrastructure/services/whatsapp.module';
+import { GoogleCalendarModule } from './infrastructure/services/google-calendar.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { WhatsAppModule } from './infrastructure/services/whatsapp.module';
     AuthModule,
     UploadModule,
     WhatsAppModule,
+    GoogleCalendarModule,
   ],
   controllers: [AppController],
   providers: [AppService],

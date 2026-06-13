@@ -18,6 +18,7 @@ export class PrismaReservationRepository implements IReservationRepository {
         serviceId: data.serviceId!,
         variantId: data.variantId ?? null,
         userId: data.userId,
+        googleEventId: data.googleEventId ?? null,
       }
     });
     return new ReservationEntity(model as any);
@@ -71,6 +72,7 @@ export class PrismaReservationRepository implements IReservationRepository {
         notes: data.notes,
         date: data.date,
         userId: data.userId,
+        googleEventId: data.googleEventId,
       }
     });
     return new ReservationEntity(model as any);
