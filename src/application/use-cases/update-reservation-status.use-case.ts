@@ -6,6 +6,8 @@ import { SERVICE_REPOSITORY } from '../../domain/interfaces/service.repository.i
 import type { IServiceRepository } from '../../domain/interfaces/service.repository.interface';
 import { WHATSAPP_SERVICE } from '../../domain/interfaces/whatsapp-service.interface';
 import type { IWhatsAppService } from '../../domain/interfaces/whatsapp-service.interface';
+import { GOOGLE_CALENDAR_SERVICE } from '../../domain/interfaces/google-calendar-service.interface';
+import type { IGoogleCalendarService } from '../../domain/interfaces/google-calendar-service.interface';
 
 @Injectable()
 export class UpdateReservationStatusUseCase {
@@ -16,6 +18,8 @@ export class UpdateReservationStatusUseCase {
     private readonly serviceRepository: IServiceRepository,
     @Inject(WHATSAPP_SERVICE)
     private readonly whatsappService: IWhatsAppService,
+    @Inject(GOOGLE_CALENDAR_SERVICE)
+    private readonly googleCalendarService: IGoogleCalendarService,
   ) {}
 
   async execute(id: string, status: ReservationStatus): Promise<ReservationEntity> {
@@ -36,6 +40,36 @@ export class UpdateReservationStatusUseCase {
       reservation = await this.reservationRepository.update(id, { status });
     } catch (error) {
       throw new BadRequestException('No se pudo actualizar la reserva. Es posible que el ID no exista.');
+    }
+
+    // 4. Gestionar evento en Google Calendar (en segundo plano)
+    if (status === ReservationStatus.CONFIRMED) {
+      if (!existingReservation.googleEventId) {
+        try {
+          const service = await this.serviceRepository.findById(reservation.serviceId);
+          const serviceName = service ? service.name : 'Ritual';
+          const duration = service ? service.duration : 60;
+
+          const eventId = await this.googleCalendarService.createEvent(reservation, serviceName, duration);
+          if (eventId) {
+            reservation = await this.reservationRepository.update(id, { googleEventId: eventId });
+          }
+        } catch (calendarErr: any) {
+          console.error('Error al crear evento en Google Calendar:', calendarErr.message);
+        }
+      }
+    } else {
+      // Si cambia a cualquier estado que no sea CONFIRMED y tiene un evento creado, lo eliminamos
+      if (existingReservation.googleEventId) {
+        try {
+          const success = await this.googleCalendarService.deleteEvent(existingReservation.googleEventId);
+          if (success) {
+            reservation = await this.reservationRepository.update(id, { googleEventId: null });
+          }
+        } catch (calendarErr: any) {
+          console.error('Error al eliminar evento de Google Calendar:', calendarErr.message);
+        }
+      }
     }
 
     // 4. Enviar notificación por WhatsApp (en segundo plano)

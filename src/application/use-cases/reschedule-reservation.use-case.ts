@@ -5,6 +5,8 @@ import { SERVICE_REPOSITORY } from '../../domain/interfaces/service.repository.i
 import type { IServiceRepository } from '../../domain/interfaces/service.repository.interface';
 import { WHATSAPP_SERVICE } from '../../domain/interfaces/whatsapp-service.interface';
 import type { IWhatsAppService } from '../../domain/interfaces/whatsapp-service.interface';
+import { GOOGLE_CALENDAR_SERVICE } from '../../domain/interfaces/google-calendar-service.interface';
+import type { IGoogleCalendarService } from '../../domain/interfaces/google-calendar-service.interface';
 
 @Injectable()
 export class RescheduleReservationUseCase {
@@ -15,6 +17,8 @@ export class RescheduleReservationUseCase {
     private readonly serviceRepository: IServiceRepository,
     @Inject(WHATSAPP_SERVICE)
     private readonly whatsappService: IWhatsAppService,
+    @Inject(GOOGLE_CALENDAR_SERVICE)
+    private readonly googleCalendarService: IGoogleCalendarService,
   ) {}
 
   async execute(id: string, newDate: Date) {
@@ -23,8 +27,21 @@ export class RescheduleReservationUseCase {
       throw new NotFoundException('Reserva no encontrada');
     }
 
-    // Actualizar fecha y estado a MODIFIED
-    const updatedReservation = await this.reservationRepository.update(id, { date: newDate, status: 'MODIFIED' as any });
+    // Si tiene un evento en Google Calendar, lo eliminamos (al reprogramarse, la cita cambia de fecha y pasa a MODIFIED)
+    if (reservation.googleEventId) {
+      try {
+        await this.googleCalendarService.deleteEvent(reservation.googleEventId);
+      } catch (calendarErr: any) {
+        console.error('Error al eliminar evento de Google Calendar al reprogramar:', calendarErr.message);
+      }
+    }
+
+    // Actualizar fecha, estado a MODIFIED y limpiar googleEventId
+    const updatedReservation = await this.reservationRepository.update(id, {
+      date: newDate,
+      status: 'MODIFIED' as any,
+      googleEventId: null,
+    });
 
     // Enviar notificación por WhatsApp (en segundo plano)
     try {

@@ -103,6 +103,17 @@ model Reservation {
   variant       ServiceVariant?   @relation(fields: [variantId], references: [id])
   userId        String?
   user          User?             @relation(fields: [userId], references: [id])
+  googleEventId String?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
+}
+
+model GoogleCalendarConfig {
+  id           String   @id @default(uuid())
+  accessToken  String?
+  refreshToken String?
+  expiryDate   DateTime?
+  calendarId   String   @default("primary")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
