@@ -75,10 +75,10 @@ export class ExternalWhatsAppService implements IWhatsAppService {
       }
 
       return {
-        authenticated: true,
-        status: 'READY',
+        authenticated: false,
+        status: 'DISCONNECTED',
         provider: 'external-api',
-        phoneNumber: 'Gateway Remoto (Activo)',
+        phoneNumber: 'Gateway Remoto (Desconectado/No disponible)',
       };
     } catch (error) {
       return {
