@@ -117,3 +117,25 @@ model GoogleCalendarConfig {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+// -----------------------------------------------------------------------------
+// Modelos de Horarios y Vacaciones
+// -----------------------------------------------------------------------------
+model BusinessSchedule {
+  id        String   @id @default(uuid())
+  dayOfWeek Int      @unique // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+  startTime String   @default("09:00") // e.g. "09:00"
+  endTime   String   @default("19:30") // e.g. "19:30"
+  isClosed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TimeOff {
+  id        String   @id @default(uuid())
+  startDate DateTime
+  endDate   DateTime
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

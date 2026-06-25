@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { WhatsAppModule } from './infrastructure/services/whatsapp.module';
 import { GoogleCalendarModule } from './infrastructure/services/google-calendar.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -16,8 +17,10 @@ import { GoogleCalendarModule } from './infrastructure/services/google-calendar.
     UploadModule,
     WhatsAppModule,
     GoogleCalendarModule,
+    SchedulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+
