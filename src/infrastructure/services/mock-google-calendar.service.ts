@@ -4,19 +4,24 @@ import { ReservationEntity } from '../../domain/entities/reservation.entity';
 
 @Injectable()
 export class MockGoogleCalendarService implements IGoogleCalendarService {
+  private events = new Map<string, any>();
+
   async createEvent(
     reservation: ReservationEntity,
     serviceName: string,
     durationInMinutes: number,
   ): Promise<string | null> {
-    const mockId = `mock-event-${Math.random().toString(36).substring(2, 11)}`;
-    console.log(`[MockGoogleCalendarService] Creando evento para la reserva ${reservation.id}:`);
-    console.log(`  Cliente: ${reservation.customerName}`);
-    console.log(`  Ritual: ${serviceName}`);
-    console.log(`  Fecha: ${reservation.date}`);
-    console.log(`  Duración: ${durationInMinutes} minutos`);
-    console.log(`  Retornando ID simulado: ${mockId}`);
-    return mockId;
+    const fakeId = `mock-event-${reservation.id}`;
+    this.events.set(fakeId, { reservationId: reservation.id, serviceName, durationInMinutes });
+    return fakeId;
+  }
+
+  async updateEvent(eventId: string, reservation: ReservationEntity, serviceName: string, durationInMinutes: number): Promise<boolean> {
+    if (this.events.has(eventId)) {
+      this.events.set(eventId, { reservationId: reservation.id, serviceName, durationInMinutes });
+      return true;
+    }
+    return false;
   }
 
   async deleteEvent(eventId: string): Promise<boolean> {

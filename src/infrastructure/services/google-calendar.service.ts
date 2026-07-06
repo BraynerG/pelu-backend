@@ -224,4 +224,61 @@ export class GoogleCalendarService implements IGoogleCalendarService {
       return false;
     }
   }
+
+  async updateEvent(
+    eventId: string,
+    reservation: ReservationEntity,
+    serviceName: string,
+    durationInMinutes: number,
+  ): Promise<boolean> {
+    const calendar = await this.getCalendarClient();
+    if (!calendar) {
+      console.warn('Google Calendar Client no inicializado. Omitiendo actualización de evento.');
+      return false;
+    }
+
+    try {
+      const startDate = new Date(reservation.date);
+      const endDate = new Date(startDate.getTime() + durationInMinutes * 60 * 1000);
+
+      const descriptionLines = [
+        `Cliente: ${reservation.customerName}`,
+        `Teléfono: ${reservation.customerPhone}`,
+        `Ritual: ${serviceName}`,
+        reservation.notes ? `Notas: ${reservation.notes}` : null,
+        `ID de Reserva: ${reservation.id}`,
+      ].filter(Boolean);
+
+      const event = {
+        summary: `Reserva: ${serviceName} - ${reservation.customerName}`,
+        description: descriptionLines.join('\n'),
+        start: {
+          dateTime: startDate.toISOString(),
+          timeZone: this.timeZone,
+        },
+        end: {
+          dateTime: endDate.toISOString(),
+          timeZone: this.timeZone,
+        },
+        reminders: {
+          useDefault: false,
+          overrides: [
+            { method: 'popup', minutes: 30 },
+            { method: 'email', minutes: 120 },
+          ],
+        },
+      };
+
+      await calendar.events.update({
+        calendarId: this.calendarId,
+        eventId: eventId,
+        requestBody: event,
+      });
+
+      return true;
+    } catch (error: any) {
+      console.error(`Error al actualizar evento ${eventId} de Google Calendar:`, error.message);
+      return false;
+    }
+  }
 }

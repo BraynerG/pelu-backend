@@ -1,10 +1,13 @@
-import { Controller, Post, Body, Get, Patch, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Patch, Put, Param, UseGuards, Req } from '@nestjs/common';
 import { CreateReservationUseCase } from '../../application/use-cases/create-reservation.use-case';
 import { GetReservationsUseCase } from '../../application/use-cases/get-reservations.use-case';
 import { UpdateReservationStatusUseCase } from '../../application/use-cases/update-reservation-status.use-case';
 import { RescheduleReservationUseCase } from '../../application/use-cases/reschedule-reservation.use-case';
 import { GetOccupiedSlotsUseCase } from '../../application/use-cases/get-occupied-slots.use-case';
 import { CreateReservationDto } from '../../application/dtos/create-reservation.dto';
+import { AdminCreateReservationDto, UpdateReservationDto } from '../../application/dtos/admin-reservation.dto';
+import { AdminCreateReservationUseCase } from '../../application/use-cases/admin-create-reservation.use-case';
+import { UpdateReservationUseCase } from '../../application/use-cases/update-reservation.use-case';
 import { ReservationStatus } from '../../domain/entities/reservation.entity';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
@@ -19,6 +22,8 @@ export class ReservationsController {
     private readonly updateReservationStatusUseCase: UpdateReservationStatusUseCase,
     private readonly rescheduleReservationUseCase: RescheduleReservationUseCase,
     private readonly getOccupiedSlotsUseCase: GetOccupiedSlotsUseCase,
+    private readonly adminCreateReservationUseCase: AdminCreateReservationUseCase,
+    private readonly updateReservationUseCase: UpdateReservationUseCase,
   ) {}
 
   @Post()
@@ -26,6 +31,18 @@ export class ReservationsController {
   async create(@Body() createReservationDto: CreateReservationDto, @Req() req: any) {
     const userId = req.user?.id;
     const reservation = await this.createReservationUseCase.execute(createReservationDto, userId);
+    return {
+      success: true,
+      data: reservation,
+    };
+  }
+
+  @Post('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  async adminCreate(@Body() createReservationDto: AdminCreateReservationDto, @Req() req: any) {
+    const userId = req.user?.id;
+    const reservation = await this.adminCreateReservationUseCase.execute(createReservationDto, userId);
     return {
       success: true,
       data: reservation,
@@ -74,6 +91,20 @@ export class ReservationsController {
     @Body('date') date: string,
   ) {
     const reservation = await this.rescheduleReservationUseCase.execute(id, new Date(date));
+    return {
+      success: true,
+      data: reservation,
+    };
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  async update(
+    @Param('id') id: string,
+    @Body() updateReservationDto: UpdateReservationDto,
+  ) {
+    const reservation = await this.updateReservationUseCase.execute(id, updateReservationDto);
     return {
       success: true,
       data: reservation,

@@ -20,6 +20,17 @@ export interface IGoogleCalendarService {
   deleteEvent(eventId: string): Promise<boolean>;
 
   /**
+   * Actualiza un evento en Google Calendar por su ID.
+   * Devuelve true si se actualizó con éxito, false en caso contrario.
+   */
+  updateEvent(
+    eventId: string,
+    reservation: ReservationEntity,
+    serviceName: string,
+    durationInMinutes: number,
+  ): Promise<boolean>;
+
+  /**
    * Obtiene el estado de la conexión de Google Calendar.
    */
   getStatus(): Promise<{ connected: boolean; email?: string; provider?: string }>;

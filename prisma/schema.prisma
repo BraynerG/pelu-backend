@@ -104,6 +104,7 @@ model Reservation {
   userId        String?
   user          User?             @relation(fields: [userId], references: [id])
   googleEventId String?
+  durationOverride Int?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
 }

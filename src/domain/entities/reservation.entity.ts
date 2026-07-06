@@ -17,6 +17,7 @@ export class ReservationEntity {
   variantId: string | null;
   userId: string | null;
   googleEventId: string | null;
+  durationOverride: number | null;
   createdAt: Date;
   updatedAt: Date;
   variant?: any; // To avoid circular dependency, keep as any or import from service.entity
